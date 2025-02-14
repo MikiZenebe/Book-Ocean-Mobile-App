@@ -23,7 +23,14 @@ export default function OnboardingScreen() {
         next={
           prev && <Slide slide={next} totalSlide={onBoardingSlides.length} />
         }
-      ></Slider>
+      >
+        <Slide
+          slide={onBoardingSlides[index]}
+          index={index}
+          setIndex={setIndex}
+          totalSlide={onBoardingSlides.length}
+        />
+      </Slider>
     </GestureHandlerRootView>
   );
 }
