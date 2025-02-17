@@ -18,10 +18,24 @@ export default function OnboardingScreen() {
         index={index}
         setIndex={setIndex}
         prev={
-          prev && <Slide slide={prev} totalSlide={onBoardingSlides.length} />
+          prev && (
+            <Slide
+              slide={prev}
+              totalSlide={onBoardingSlides.length}
+              setIndex={setIndex}
+              index={index}
+            />
+          )
         }
         next={
-          prev && <Slide slide={next} totalSlide={onBoardingSlides.length} />
+          prev && (
+            <Slide
+              slide={next}
+              totalSlide={onBoardingSlides.length}
+              setIndex={setIndex}
+              index={index}
+            />
+          )
         }
       >
         <Slide
