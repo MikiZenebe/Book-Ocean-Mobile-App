@@ -1,6 +1,6 @@
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import noteImg from "@/assets/images/note-icon.png";
-import { router, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 export default function HomeScreen() {
   const router = useRouter();
