@@ -1,27 +1,15 @@
-import { View, Text } from "react-native";
-import React, { useEffect, useState } from "react";
-import * as SecureStore from "expo-secure-store";
-import { Redirect } from "expo-router";
+import { Text, View } from "react-native";
 
-export default function index() {
-  const [loggedInUser, setLoggedInUser] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const subscription = async () => {
-      const token = SecureStore.getItem("accessToken");
-      setLoggedInUser(token ? true : false);
-    };
-    subscription();
-  }, []);
-
+export default function Index() {
   return (
-    <>
-      {loading ? (
-        <></>
-      ) : (
-        <Redirect href={!loggedInUser ? "/(routes)/onboarding" : "/(tabs)"} />
-      )}
-    </>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Text>Edit app/index.tsx to edit this screen.</Text>
+    </View>
   );
 }

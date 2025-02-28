@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "lms-mobile-app",
-    "slug": "lms-mobile-app",
+    "name": "RN-course",
+    "slug": "RN-course",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -32,8 +32,7 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ],
-      "expo-secure-store"
+      ]
     ],
     "experiments": {
       "typedRoutes": true
