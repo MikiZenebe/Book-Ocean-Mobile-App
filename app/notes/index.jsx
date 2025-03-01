@@ -1,31 +1,33 @@
-import { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Modal,
-  TextInput,
-} from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import NoteList from "../../components/NoteList";
+import AddNoteModel from "../../components/AddNoteModel";
+import noteServices from "../../services/noteServices";
 
 export default function NoteScreen() {
-  const [notes, setNotes] = useState([
-    {
-      id: "1",
-      text: "Note One",
-    },
-    {
-      id: "2",
-      text: "Note Two",
-    },
-    {
-      id: "3",
-      text: "Note Three",
-    },
-  ]);
+  const [notes, setNotes] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [newNote, setNewNote] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchNotes = async () => {
+      setLoading(true);
+      const res = await noteServices.getNotes();
+
+      if (res.error) {
+        setError(res.error);
+        Alert.alert("Error", res.error);
+      } else {
+        setNotes(res.data);
+        setError(null);
+      }
+      setLoading(false);
+    };
+
+    fetchNotes();
+  });
 
   //Add new note
   const addNote = () => {
@@ -42,16 +44,7 @@ export default function NoteScreen() {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={notes}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.noteItem}>
-            <Text style={styles.noteText}>{item.text}</Text>
-          </View>
-        )}
-      />
-
+      <NoteList notes={notes} />
       <TouchableOpacity
         style={styles.addBtn}
         onPress={() => setModalVisible(true)}
@@ -59,37 +52,13 @@ export default function NoteScreen() {
         <Text style={styles.addBtnTxt}>+ Add Note</Text>
       </TouchableOpacity>
 
-      <Modal
-        visible={modalVisible}
-        animationType="fade"
-        transparent
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Add a New Note</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter note.."
-              placeholderTextColor="#aaa"
-              value={newNote}
-              onChangeText={setNewNote}
-            />
-            <View style={styles.modalBtns}>
-              <TouchableOpacity
-                style={styles.modalCancelBtn}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.cancelBtnTxt}>Cancel</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.modalSaveBtn} onPress={addNote}>
-                <Text style={styles.saveBtnTxt}>Save</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <AddNoteModel
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        newNote={newNote}
+        setNewNote={setNewNote}
+        addNote={addNote}
+      />
     </View>
   );
 }
@@ -100,18 +69,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
   },
-  noteItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    backgroundColor: "#244438",
-    padding: 15,
-    borderRadius: 5,
-    marginVertical: 5,
-  },
-  noteText: {
-    fontSize: 18,
-    color: "#fff",
-  },
+
   addBtn: {
     position: "absolute",
     bottom: 20,
@@ -126,58 +84,5 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
-    width: "80%",
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-    textAlign: "center",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 10,
-    fontSize: 16,
-    marginBottom: 15,
-  },
-  modalBtns: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  modalCancelBtn: {
-    backgroundColor: "#ccc",
-    padding: 10,
-    borderRadius: 5,
-    flex: 1,
-    marginRight: 10,
-    alignItems: "center",
-  },
-  cancelBtnTxt: {
-    fontSize: 16,
-    color: "#333",
-  },
-  modalSaveBtn: {
-    backgroundColor: "#6ECDAA",
-    padding: 10,
-    borderRadius: 5,
-    flex: 1,
-    alignItems: "center",
-  },
-  saveBtnTxt: {
-    fontSize: 16,
-    color: "#fff",
   },
 });
