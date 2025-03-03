@@ -15,6 +15,26 @@ const noteServices = {
 
     return { data: res };
   },
+
+  //Add note
+  async addNote(text) {
+    if (!text) {
+      return { error: "Note text cannot be empty" };
+    }
+
+    const data = {
+      text: text,
+      createdAt: new Date().toISOString(),
+    };
+
+    const res = await dbService.createDocument(dbId, colId, data, ID.unique());
+    console.log("API response:", res);
+    if (res.error) {
+      return { error: res.error };
+    }
+
+    return { data: res };
+  },
 };
 
 export default noteServices;
