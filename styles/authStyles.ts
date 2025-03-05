@@ -64,14 +64,16 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.primary,
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 14,
+    borderColor: COLORS.primary,
+    borderWidth: 1,
     marginBottom: 20,
     width: "100%",
     maxWidth: 300,
-    shadowColor: "#000",
+    shadowColor: "#fff",
     shadowOffset: {
       width: 0,
       height: 4,
@@ -92,7 +94,7 @@ export const styles = StyleSheet.create({
   googleBtnTxt: {
     fontSize: 16,
     fontWeight: "600",
-    color: COLORS.surface,
+    color: "white",
   },
 
   termsTxt: {
