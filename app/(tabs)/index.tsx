@@ -1,10 +1,16 @@
+import { useAuth } from "@clerk/clerk-expo";
 import { Link } from "expo-router";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
+  const {signOut} = useAuth();
+
+
   return (
     <View>
-      <Link href={`/notifications`}>Visit Notification</Link>
+     <TouchableOpacity onPress={()=>signOut()}>
+      <Text>Signout</Text>
+     </TouchableOpacity>
     </View>
   );
 }
