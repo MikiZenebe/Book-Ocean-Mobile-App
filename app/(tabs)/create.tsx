@@ -16,6 +16,10 @@ import { styles } from "@/styles/createStyles";
 import { COLORS } from "@/constants/theme";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { generateUploadUrl } from "@/convex/posts";
 
 export default function CreatePostScreen() {
   const router = useRouter();
@@ -34,6 +38,39 @@ export default function CreatePostScreen() {
     });
 
     if (!result.canceled) setSelectedImage(result.assets[0].uri);
+  };
+
+  const generateUploadUrl = useMutation(api.posts.generateUploadUrl);
+  const createPost = useMutation(api.posts.createPost);
+
+  const handleShare = async () => {
+    if (!selectedImage) return;
+
+    try {
+      setIsSharing(true);
+      const uploadUrl = await generateUploadUrl();
+
+      const uploadResult = await FileSystem.uploadAsync(
+        uploadUrl,
+        selectedImage,
+        {
+          httpMethod: "POST",
+          uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+          mimeType: "image/jpeg",
+        }
+      );
+
+      if (uploadResult.status !== 200) throw new Error("Upload Failed");
+
+      const { storageId } = JSON.parse(uploadResult.body);
+      await createPost({ storageId, caption });
+
+      router.push("/(tabs)");
+    } catch (error) {
+      console.log("Error sharing post");
+    } finally {
+      setIsSharing(false);
+    }
   };
 
   if (!selectedImage) {
@@ -90,6 +127,7 @@ export default function CreatePostScreen() {
               isSharing && styles.shareButtonDisabled,
             ]}
             disabled={isSharing || !selectedImage}
+            onPress={handleShare}
           >
             {isSharing ? (
               <ActivityIndicator size="small" color={COLORS.primary} />
