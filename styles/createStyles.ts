@@ -6,7 +6,7 @@ const { width } = Dimensions.get("window");
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    // backgroundColor: COLORS.background,
   },
 
   contentContainer: {
@@ -19,13 +19,14 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 0.5,
-    borderBottomColor: COLORS.surface,
+    borderBottomColor: COLORS.grey,
+    backgroundColor: "white",
   },
 
   headerTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: COLORS.white,
+    color: "black",
   },
 
   contentDisabled: {
@@ -87,7 +88,7 @@ export const styles = StyleSheet.create({
     position: "absolute",
     bottom: 16,
     right: 16,
-    backgroundColor: "rgba(0,0,0,0.75)",
+    backgroundColor: COLORS.primary,
     flexDirection: "row",
     alignItems: "center",
     padding: 8,
@@ -112,7 +113,7 @@ export const styles = StyleSheet.create({
   },
 
   userAvatar: {
-    width: 16,
+    width: 36,
     height: 36,
     borderRadius: 18,
     marginRight: 12,
@@ -120,7 +121,7 @@ export const styles = StyleSheet.create({
 
   captionInput: {
     flex: 1,
-    color: COLORS.white,
+    color: "black",
     fontSize: 16,
     paddingTop: 8,
     minHeight: 40,
