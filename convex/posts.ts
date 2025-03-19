@@ -78,6 +78,7 @@ export const getFeedPosts = query({
           ...post,
           author: {
             _id: postAuthor?._id,
+            fullname: postAuthor?.fullname,
             username: postAuthor?.username,
             image: postAuthor?.image,
           },
