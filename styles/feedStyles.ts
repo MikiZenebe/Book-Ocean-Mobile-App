@@ -14,8 +14,6 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.surface,
   },
   headerTitle: {
     fontSize: 24,
@@ -24,8 +22,8 @@ export const styles = StyleSheet.create({
   },
   storiesContainer: {
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.surface,
+    borderBottomWidth: 0.2,
+    borderBottomColor: COLORS.grey,
   },
   storyWrapper: {
     alignItems: "center",
@@ -54,7 +52,7 @@ export const styles = StyleSheet.create({
   },
   storyUsername: {
     fontSize: 11,
-    color: COLORS.white,
+    color: "black",
     textAlign: "center",
   },
   post: {
@@ -62,7 +60,6 @@ export const styles = StyleSheet.create({
   },
   postHeader: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
     padding: 12,
   },
@@ -76,10 +73,16 @@ export const styles = StyleSheet.create({
     borderRadius: 16,
     marginRight: 8,
   },
-  postUsername: {
+  postFullname: {
     fontSize: 14,
     fontWeight: "600",
-    color: COLORS.white,
+    color: "black",
+    marginRight: 5,
+  },
+  postUsername: {
+    fontSize: 14,
+    fontWeight: "300",
+    color: COLORS.grey,
   },
   postImage: {
     width: width,
@@ -95,6 +98,7 @@ export const styles = StyleSheet.create({
   postActionsLeft: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     gap: 16,
   },
   postInfo: {
@@ -103,7 +107,7 @@ export const styles = StyleSheet.create({
   likesText: {
     fontSize: 14,
     fontWeight: "600",
-    color: COLORS.white,
+    color: "black",
     marginBottom: 6,
   },
   captionContainer: {
@@ -114,13 +118,12 @@ export const styles = StyleSheet.create({
   captionUsername: {
     fontSize: 14,
     fontWeight: "600",
-    color: COLORS.white,
+    color: COLORS.grey,
     marginRight: 6,
   },
   captionText: {
     fontSize: 14,
     flex: 1,
-    color: COLORS.white,
   },
   commentsText: {
     fontSize: 14,
@@ -130,7 +133,7 @@ export const styles = StyleSheet.create({
   timeAgo: {
     fontSize: 12,
     color: COLORS.grey,
-    marginBottom: 8,
+    textAlign: "auto",
   },
   modalContainer: {
     flex: 1,
@@ -177,7 +180,7 @@ export const styles = StyleSheet.create({
     marginBottom: 4,
   },
   commentText: {
-    color: COLORS.white,
+    color: COLORS.grey,
     fontSize: 14,
     lineHeight: 20,
   },
