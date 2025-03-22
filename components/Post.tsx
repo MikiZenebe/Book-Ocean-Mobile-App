@@ -8,6 +8,8 @@ import { COLORS } from "@/constants/theme";
 import { Id } from "@/convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import CommentsModal from "./CommentsModal";
+import { formatDistanceToNow } from "date-fns";
 
 type PostProps = {
   post: {
@@ -26,6 +28,8 @@ type PostProps = {
 export default function Post({ post }: PostProps) {
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [likeCount, setIsLikeCount] = useState(post.likes);
+  const [commentCount, setIsCommentCount] = useState(post.comments);
+  const [showComments, setShowComments] = useState(false);
 
   const toggleLike = useMutation(api.posts.toogleLike);
 
@@ -59,7 +63,9 @@ export default function Post({ post }: PostProps) {
         </Link>
 
         <TouchableOpacity>
-          <Text style={styles.timeAgo}>2 hours ago</Text>
+          <Text style={styles.timeAgo}>
+            {formatDistanceToNow(post._creationTime, { addSuffix: true })}
+          </Text>
           {/* <Ionicons name="trash-outline" size={20} color={COLORS.primary} /> */}
         </TouchableOpacity>
       </View>
@@ -83,7 +89,7 @@ export default function Post({ post }: PostProps) {
         >
           <Ionicons
             name={isLiked ? "heart" : "heart-outline"}
-            size={24}
+            size={20}
             color={isLiked ? COLORS.primary : "black"}
           />
           <Text>
@@ -96,14 +102,18 @@ export default function Post({ post }: PostProps) {
             alignItems: "center",
             gap: 2,
           }}
+          onPress={() => setShowComments(true)}
         >
-          <Ionicons name="chatbubble-outline" size={22} />
+          <Ionicons name="chatbubble-outline" size={20} />
+          <Text>
+            {commentCount} {commentCount >= 2 ? "comments" : "comment"}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity>
-          <Ionicons name="bookmark-outline" size={22} />
+          <Ionicons name="bookmark-outline" size={20} />
         </TouchableOpacity>
         <TouchableOpacity>
-          <Ionicons name="trash-outline" size={22} />
+          <Ionicons name="trash-outline" size={20} />
         </TouchableOpacity>
       </View>
 
@@ -117,11 +127,14 @@ export default function Post({ post }: PostProps) {
             <Text style={styles.captionText}>{post.caption}</Text>
           </View>
         )}
-
-        <TouchableOpacity>
-          <Text style={styles.commentText}>View all 2 comments</Text>
-        </TouchableOpacity>
       </View>
+
+      <CommentsModal
+        postId={post._id}
+        visible={showComments}
+        onClose={() => setShowComments(false)}
+        onCommentAdded={() => setIsCommentCount((prev) => prev + 1)}
+      />
     </View>
   );
 }
