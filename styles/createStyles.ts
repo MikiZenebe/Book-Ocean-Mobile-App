@@ -122,8 +122,11 @@ export const styles = StyleSheet.create({
   captionInput: {
     flex: 1,
     color: "black",
-    fontSize: 16,
-    paddingTop: 8,
-    minHeight: 40,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+
+    borderWidth: 0.5,
+    borderRadius: 10,
+    fontSize: 14,
   },
 });

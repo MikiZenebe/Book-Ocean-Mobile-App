@@ -6,10 +6,11 @@ import { styles } from "@/styles/feedStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "@/constants/theme";
 import { Id } from "@/convex/_generated/dataModel";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import CommentsModal from "./CommentsModal";
 import { formatDistanceToNow } from "date-fns";
+import { useUser } from "@clerk/clerk-expo";
 
 type PostProps = {
   post: {
@@ -32,8 +33,15 @@ export default function Post({ post }: PostProps) {
   const [commentCount, setIsCommentCount] = useState(post.comments);
   const [showComments, setShowComments] = useState(false);
 
+  const { user } = useUser();
+  const currentUser = useQuery(
+    api.users.getUserByClerkId,
+    user ? { clerkId: user.id } : "skip"
+  );
+
   const toggleLike = useMutation(api.posts.toogleLike);
   const toogleBookmark = useMutation(api.bookmarks.toogleBookmark);
+  const deletePost = useMutation(api.posts.deletePost);
 
   const handleLike = async () => {
     try {
@@ -48,6 +56,14 @@ export default function Post({ post }: PostProps) {
   const handleBookmark = async () => {
     const newIsBookmarked = await toogleBookmark({ postId: post._id });
     setIsBookmarked(newIsBookmarked);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deletePost({ postId: post._id });
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
   };
 
   return (
@@ -131,9 +147,16 @@ export default function Post({ post }: PostProps) {
           />
           <Text>{isBookmarked ? "bookmarked" : "bookmark"}</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Ionicons name="trash-outline" size={20} />
-        </TouchableOpacity>
+
+        {post.author._id === currentUser?._id ? (
+          <TouchableOpacity onPress={handleDelete}>
+            <Ionicons name="trash-outline" size={20} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity>
+            <Ionicons name="ellipsis-horizontal" size={20} />
+          </TouchableOpacity>
+        )}
       </View>
 
       <View style={styles.postInfo}>
