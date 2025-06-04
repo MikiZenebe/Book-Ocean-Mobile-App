@@ -1,26 +1,38 @@
 import { model, Schema } from "mongoose";
+import bcrypt from "bcryptjs";
 
 const userSchema = new Schema({
   username: {
-    type: string,
+    type: String,
     required: true,
     unique: true,
   },
   email: {
-    type: string,
+    type: String,
     required: true,
     unique: true,
   },
   password: {
-    type: string,
+    type: String,
     required: true,
     minLength: 6,
   },
   profileImage: {
-    type: string,
+    type: String,
     default: "",
   },
 });
 
+//hase password before save to DB
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+
+  next(); //call the next functionality
+});
+
 const User = model("User", userSchema);
+
 export default User;
