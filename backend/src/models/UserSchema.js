@@ -33,6 +33,11 @@ userSchema.pre("save", async function (next) {
   next(); //call the next functionality
 });
 
+//compare password
+userSchema.methods.comparePassword = async function (userPassword) {
+  return await bcrypt.compare(userPassword, this.password);
+};
+
 const User = model("User", userSchema);
 
 export default User;
