@@ -64,6 +64,21 @@ router.get("/", protectRoute, async (req, res) => {
   }
 });
 
+//Get recommended books by logged in user
+router.get("/user", protectRoute, async (req, res) => {
+  try {
+    const books = await Book.find({ user: req.params._id }).sort({
+      createdAt: -1,
+    });
+
+    res.json({ books });
+  } catch (error) {
+    console.log("Error in fetching book", error);
+
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 //delete the book
 router.delete("/:id", protectRoute, async (req, res) => {
   try {
