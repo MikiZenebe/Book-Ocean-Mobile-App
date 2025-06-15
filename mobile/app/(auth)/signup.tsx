@@ -5,6 +5,7 @@ import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   KeyboardAvoidingView,
   Platform,
   Text,
@@ -12,15 +13,24 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useAuthStore } from "@/store/authStore";
 
 export default function SignUpScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { user, register, isLoading } = useAuthStore();
+
+  console.log(user);
 
   const router = useRouter();
+
+  const handleSignup = async () => {
+    const result = await register(username, email, password);
+    console.log("Register result:", result);
+    if (!result.success) Alert.alert("Error", result.error);
+  };
 
   return (
     <KeyboardAvoidingView
@@ -46,7 +56,7 @@ export default function SignUpScreen() {
                 />
                 <TextInput
                   style={styles.input}
-                  placeholder="Miki Zenebe"
+                  placeholder="mikizenebe"
                   value={username}
                   onChangeText={setUsername}
                   autoCapitalize="none"
@@ -103,11 +113,11 @@ export default function SignUpScreen() {
               </View>
             </View>
 
-            <TouchableOpacity style={styles.button} onPress={() => {}}>
+            <TouchableOpacity style={styles.button} onPress={handleSignup}>
               {isLoading ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text style={styles.buttonText}>Login</Text>
+                <Text style={styles.buttonText}>Signup</Text>
               )}
             </TouchableOpacity>
 
