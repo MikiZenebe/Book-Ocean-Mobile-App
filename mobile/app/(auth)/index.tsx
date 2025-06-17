@@ -7,18 +7,26 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import styles from "@/styles/loginStyles";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "@/constants/color";
 import { Link } from "expo-router";
+import { useAuthStore } from "@/store/authStore";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, login } = useAuthStore();
+
+  const handleLogin = async () => {
+    const result = await login(email, password);
+    console.log(result);
+    if (!result.success) Alert.alert("Error", result.error);
+  };
 
   return (
     <KeyboardAvoidingView
@@ -85,7 +93,7 @@ export default function LoginScreen() {
               </View>
             </View>
 
-            <TouchableOpacity style={styles.button} onPress={() => {}}>
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
               {isLoading ? (
                 <ActivityIndicator color="#fff" />
               ) : (
