@@ -13,7 +13,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
   //handle navigation based on the auth state
   useEffect(() => {
