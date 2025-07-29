@@ -1,4 +1,10 @@
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { Image } from "expo-image";
 import { useAuthStore } from "@/store/authStore";
@@ -7,6 +13,7 @@ import { baseUrl } from "@/constants/baseUrl";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "@/constants/color";
 import { formatPublishDate } from "@/lib/utils";
+import Loader from "@/components/Loader";
 
 interface Book {
   rating: any;
@@ -71,7 +78,11 @@ export default function Home() {
     fetchBooks();
   }, []);
 
-  const handleLoadMore = async () => {};
+  const handleLoadMore = async () => {
+    if (hasMore && !loading && !refreshing) {
+      await fetchBooks(page + 1);
+    }
+  };
 
   const renderItem = ({ item }: { item: Book }) => (
     <View style={styles.bookCard}>
@@ -122,6 +133,8 @@ export default function Home() {
     return <View style={{ flexDirection: "row" }}>{stars}</View>;
   };
 
+  if (loading) return <Loader size="large" />;
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -130,6 +143,16 @@ export default function Home() {
         keyExtractor={(item) => item._id}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => fetchBooks(1, true)}
+            colors={[COLORS.primary]}
+            tintColor={COLORS.primary}
+          />
+        }
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.1}
         ListHeaderComponent={
           <View style={styles.header}>
             <Text style={styles.headerTitle}>Books Ocean</Text>
@@ -137,6 +160,15 @@ export default function Home() {
               Discover great reads from the community
             </Text>
           </View>
+        }
+        ListFooterComponent={
+          hasMore && books.length > 0 ? (
+            <ActivityIndicator
+              style={styles.footerLoader}
+              size="small"
+              color={COLORS.primary}
+            />
+          ) : null
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
