@@ -23,6 +23,7 @@ interface AuthState {
     password: string
   ) => Promise<{ success: boolean; error?: string }>;
   checkAuth: () => void;
+  logout: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
