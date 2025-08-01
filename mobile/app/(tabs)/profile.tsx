@@ -1,4 +1,12 @@
-import { View, Text, TouchableOpacity, Alert, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  FlatList,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "expo-router";
@@ -9,6 +17,7 @@ import styles from "@/styles/profileStyle";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "@/constants/color";
 import { Image } from "expo-image";
+import Loader from "@/components/Loader";
 
 interface Book {
   rating: any;
@@ -25,9 +34,10 @@ interface Book {
 
 export default function Profile() {
   const { token } = useAuthStore();
-  const [books, setBooks] = useState<any[]>([]);
+  const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [deleteBookId, setDeleteBookId] = useState<null | string>(null);
 
   const router = useRouter();
 
@@ -41,12 +51,11 @@ export default function Profile() {
         },
       });
 
-      console.log(token);
       const data = await response.json();
       if (!response.ok)
         throw new Error(data.message || "Failed to fetch user books");
 
-      setBooks(data);
+      setBooks(data?.books);
     } catch (error) {
       console.error("Error fetching books:", error);
       Alert.alert("Error", "Failed to load profile data. Pull fown to refresh");
@@ -58,6 +67,39 @@ export default function Profile() {
   useEffect(() => {
     fetchBooks();
   }, []);
+
+  const handleDeleteBook = async (bookId: string) => {
+    try {
+      setDeleteBookId(bookId);
+      const response = await fetch(`${baseUrl}/api/books/${bookId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || "Failed to delete book");
+
+      setBooks(books.filter((book) => book._id !== bookId));
+      Alert.alert("Success", "Recommendation deleted successfully");
+    } catch (error) {
+      const err = error as Error;
+      Alert.alert("Error", err.message || "Failed to delete recommendation");
+    } finally {
+      setDeleteBookId(null);
+    }
+  };
+
+  const confirmDelete = (bookId: string) => {
+    Alert.alert(
+      "Delete Recommednation",
+      "Are you sure you want to delete this recommendation?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Delete", onPress: () => handleDeleteBook(bookId) },
+      ]
+    );
+  };
 
   const renderRatingStars = (rating: number) => {
     const stars = [];
@@ -94,11 +136,26 @@ export default function Profile() {
         </Text>
       </View>
 
-      <TouchableOpacity style={styles.deleteButton} onPress={() => {}}>
-        <Ionicons name="train-outline" size={20} color={COLORS.primary} />
+      <TouchableOpacity
+        style={styles.deleteButton}
+        onPress={() => confirmDelete(item._id)}
+      >
+        {deleteBookId === item._id ? (
+          <ActivityIndicator size="small" color={COLORS.primary} />
+        ) : (
+          <Ionicons name="trash-outline" size={20} color={COLORS.primary} />
+        )}
       </TouchableOpacity>
     </View>
   );
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchBooks();
+    setRefreshing(false);
+  };
+
+  if (loading && !refreshing) return <Loader size="large" />;
 
   return (
     <View style={styles.container}>
@@ -117,6 +174,14 @@ export default function Profile() {
         keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.booksList}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={[COLORS.primary]}
+            tintColor={COLORS.primary}
+          />
+        }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Ionicons
