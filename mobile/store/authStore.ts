@@ -6,6 +6,8 @@ interface User {
   username: string;
   email: string;
   password: string;
+  profileImage: string | undefined;
+  createdAt: string;
   token: string;
 }
 
