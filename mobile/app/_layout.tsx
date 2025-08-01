@@ -1,9 +1,12 @@
 import SafeScreen from "@/components/SafeScreen";
-import { Stack, useRouter, useSegments } from "expo-router";
+import { SplashScreen, Stack, useRouter, useSegments } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { useFonts } from "expo-font";
 import { useAuthStore } from "@/store/authStore";
 import { useEffect, useState } from "react";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const router = useRouter();
@@ -11,6 +14,14 @@ export default function RootLayout() {
 
   const { user, token, checkAuth } = useAuthStore();
   const [hasMounted, setHasMounted] = useState(false);
+
+  const [fontsLoaded] = useFonts({
+    "SpaceMono-Regular": require("@/assets/fonts/SpaceMono-Regular.ttf"),
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) SplashScreen.hideAsync();
+  }, [fontsLoaded]);
 
   useEffect(() => {
     setHasMounted(true);
