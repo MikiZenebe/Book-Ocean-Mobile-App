@@ -25,7 +25,7 @@ interface Book {
 
 export default function Profile() {
   const { token } = useAuthStore();
-  const [books, setBooks] = useState<any[]>([]);
+  const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
@@ -41,12 +41,11 @@ export default function Profile() {
         },
       });
 
-      console.log(token);
       const data = await response.json();
       if (!response.ok)
         throw new Error(data.message || "Failed to fetch user books");
 
-      setBooks(data);
+      setBooks(data?.books);
     } catch (error) {
       console.error("Error fetching books:", error);
       Alert.alert("Error", "Failed to load profile data. Pull fown to refresh");
@@ -95,7 +94,7 @@ export default function Profile() {
       </View>
 
       <TouchableOpacity style={styles.deleteButton} onPress={() => {}}>
-        <Ionicons name="train-outline" size={20} color={COLORS.primary} />
+        <Ionicons name="trash-outline" size={20} color={COLORS.primary} />
       </TouchableOpacity>
     </View>
   );
