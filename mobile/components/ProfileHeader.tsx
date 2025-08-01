@@ -8,8 +8,6 @@ import styles from "@/styles/profileStyle";
 export default function ProfileHeader() {
   const { user } = useAuthStore();
 
-  console.log(user);
-
   if (!user) return null;
 
   return (
