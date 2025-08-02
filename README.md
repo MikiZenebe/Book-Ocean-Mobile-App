@@ -33,7 +33,7 @@ Welcome to **Book Ocean** – a modern fullstack mobile app built with [Expo](ht
 Make sure you have [Node.js](https://nodejs.org/) and [Expo CLI](https://docs.expo.dev/get-started/installation/) installed.
 
 ```bash
-git clone https://github.com/your-username/book-ocean.git
+git clone [https://github.com/your-username/book-ocean.git]
 cd book-ocean
 npm install
 npx expo start
